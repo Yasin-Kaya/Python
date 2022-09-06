@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This temp launches an ec2 instance with SG which enable SSH
+
+Resources:
+  CFNInstance:
+    Type: AWS::EC2::Instance
+    Properties:      
+      ImageId: ami-05fa00d4c63e32376      
+      InstanceType: t2.micro      
+      KeyName: First_Key     
+      SecurityGroups:
+        - !Ref CFNSecGroup
+      Tags: 
+        - Key: Name
+          Value: Static-Web
+      UserData: 
+        Fn::Base64: 
+          |
+            #! /bin/bash
+            yum update -y
+            yum install httpd -y
+            cd /var/www/html
+            wget https://raw.githubusercontent.com/Kaya-Y/F4369-Yasin-KAYA-Kittens-Carousel/main/index.html
+            wget https://raw.githubusercontent.com/Kaya-Y/F4369-Yasin-KAYA-Kittens-Carousel/main/cat0.jpg
+            wget https://raw.githubusercontent.com/Kaya-Y/F4369-Yasin-KAYA-Kittens-Carousel/main/cat1.jpg
+            wget https://raw.githubusercontent.com/Kaya-Y/F4369-Yasin-KAYA-Kittens-Carousel/main/cat2.jpg
+            wget https://raw.githubusercontent.com/Kaya-Y/F4369-Yasin-KAYA-Kittens-Carousel/main/cat3.png
+            systemctl start httpd
+            systemctl enable httpd                    
+  CFNSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH for CFN Ins # Required      
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
