@@ -13,5 +13,10 @@ pipeline {
                 echo "Yasin yeni ekledi bunu"
             }
         }
+        stage('dev') {
+            steps {
+                echo "Example"
+            }
+        }
     }
 }
